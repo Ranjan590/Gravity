@@ -1,0 +1,57 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+public class BOGOSale {
+    public static class SaleResult {
+        List<Integer> discountedItems;
+        List<Integer> payableItems;
+
+        public SaleResult() {
+            discountedItems = new ArrayList<>();
+            payableItems = new ArrayList<>();
+        }
+
+        @Override
+        public String toString() {
+            return "Discounted Items (Free): " + discountedItems + 
+                   "\nPayable Items: " + payableItems;
+        }
+    }
+
+    public static SaleResult calculateBOGO(Integer[] prices) {
+        // Sort prices in descending order
+        List<Integer> sortedPrices = new ArrayList<>(Arrays.asList(prices));
+        Collections.sort(sortedPrices, Collections.reverseOrder());
+
+        SaleResult result = new SaleResult();
+        
+        // Process pairs
+        for (int i = 0; i < sortedPrices.size(); i++) {
+            // If we have a next item and it's eligible for free (equal or lesser value)
+            if (i + 1 < sortedPrices.size()) {
+                result.payableItems.add(sortedPrices.get(i));
+                result.discountedItems.add(sortedPrices.get(i + 1));
+                i++; // Skip the free item
+            } else {
+                // Add remaining item as payable (no free item available)
+                result.payableItems.add(sortedPrices.get(i));
+            }
+        }
+
+        return result;
+    }
+
+    public static void main(String[] args) {
+        // Test Example 1
+        Integer[] prices1 = {10, 20, 30, 40, 50, 60};
+        System.out.println("Example 1:");
+        System.out.println(calculateBOGO(prices1));
+
+        // Test Example 2
+        Integer[] prices2 = {10, 20, 30, 40, 50, 50, 60};
+        System.out.println("\nExample 2:");
+        System.out.println(calculateBOGO(prices2));
+    }
+}
